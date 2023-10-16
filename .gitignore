@@ -28,3 +28,6 @@ Visualizations/*
 *.msc
 *.sfc~
 *.srm
+/AddmusicK.*
+/AM4Batch.*
+/AMMBatch.*

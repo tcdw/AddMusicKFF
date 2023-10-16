@@ -10,12 +10,7 @@
 #version at this time unless you're using Wine or some other emulation
 #layer)
 
-ifeq ($(OS),Windows_NT)
-#Windows setting (made for MinGW, though in hindsight this may be a bad call)...
-	CXX = x86_64-w64-mingw32-g++
-else
-	CXX = g++
-endif
+CXX = em++
 
 CXXFLAGS = -Wall -pedantic -std=c++17 -Os
 #Commented out for now
@@ -27,7 +22,7 @@ ifeq ($(OS),Windows_NT)
 	LDFLAGS = -static -static-libgcc -static-libstdc++ -s
 else
 #Mac/Linux setting...
-	LDFLAGS = -ldl
+	LDFLAGS = -ldl -s TOTAL_MEMORY=268435456
 endif
 
 #Commented out for now
@@ -42,16 +37,16 @@ AMMSRCS = src/AMMBatch/*.cpp
 
 all: addmusick
 
-addmusick: $(SRCS) src/AddmusicK/*.h
+addmusick: $(SRCS) src/AddmusicK/*.h; export 
 	cd src/AddmusicK; \
 	$(CXX) $(CXXFLAGS) -c $(patsubst %,../../%,$(SRCS))
-	$(CXX) -o AddmusicK src/AddmusicK/*.o $(LDFLAGS)
+	$(CXX) -o AddmusicK.js src/AddmusicK/*.o $(LDFLAGS)
 	cd src/AM4Batch; \
 	$(CXX) $(CXXFLAGS) -c $(patsubst %,../../%,$(AM4SRCS))
-	$(CXX) -o AM4Batch src/AM4Batch/*.o $(LDFLAGS)
+	$(CXX) -o AM4Batch.js src/AM4Batch/*.o $(LDFLAGS)
 	cd src/AMMBatch; \
 	$(CXX) $(CXXFLAGS) -c $(patsubst %,../../%,$(AMMSRCS))
-	$(CXX) -o AMMBatch src/AMMBatch/*.o $(LDFLAGS)
+	$(CXX) -o AMMBatch.js src/AMMBatch/*.o $(LDFLAGS)
 
 clean:
 	rm -rf src/AddmusicK/*.o ./addmusick
