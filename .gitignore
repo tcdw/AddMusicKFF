@@ -29,6 +29,7 @@ Visualizations/*
 *.sfc~
 *.srm
 /AddmusicK.*
+!/AddmusicK.html
 /AM4Batch.*
 /AMMBatch.*
 .idea

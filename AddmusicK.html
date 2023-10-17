@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>AddmusicK</title>
+    <style>
+        #log_bank > div {
+            white-space: pre-wrap;
+            font-family: Consolas, 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="log_bank"></div>
+    <form onsubmit="return false">
+        <label for="arg_input">Arguments: </label>
+        <input id="arg_input">
+        <button id="run_btn" disabled>Run!!</button>
+    </form>
+    <script type="module">
+        import { module, setLogger } from "./AddmusicK.js";
+
+        // logger
+        const logBank = document.getElementById("log_bank");
+        setLogger((info, type) => {
+            logBank.insertAdjacentHTML("beforeend", '<div style="color: ' + (type === "stdout" ? "blue" : "red") + '">' + info + '</div>')
+        })
+
+        // run button
+        const runBtn = document.getElementById("run_btn");
+        const addmusick = module.cwrap('main', 'number', ['number', 'number']);
+
+        runBtn.addEventListener("click", () => {
+            const args = ['addmusick', document.getElementById("arg_input").value];
+            const argsPtr = module._malloc(args.length * Uint32Array.BYTES_PER_ELEMENT);
+            args.forEach((s, idx) => {
+                const buf = module._malloc(s.length + 1);
+                module.writeAsciiToMemory(s, buf);
+                module.setValue(argsPtr + (Uint32Array.BYTES_PER_ELEMENT * idx), buf, 'i32');
+            });
+            addmusick(args.length, argsPtr);
+
+            console.log(module);
+        })
+
+        // allow to click when ready
+        module.onRuntimeInitialized = () => {
+            runBtn.disabled = "";
+        };
+
+        // hacking global
+        window.prompt = () => "some text here\n";
+        window.Module = module;
+    </script>
+</body>
+
+</html>

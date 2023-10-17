@@ -36,7 +36,8 @@ LDFLAGS = -ldl \
 	-s INVOKE_RUN=0 \
 	-s EXIT_RUNTIME=0 \
 	-s EXPORTED_FUNCTIONS="[_main, _malloc]" \
-	-s EXPORTED_RUNTIME_METHODS="[FS, ccall, cwrap, setValue, writeAsciiToMemory]"
+	-s EXPORTED_RUNTIME_METHODS="[FS, ccall, cwrap, setValue, writeAsciiToMemory]"# \
+	# -L/Users/tcdw/Projects/asar/build/asar/lib
 
 #Commented out for now
 #with libboost (this specifically targets MacPorts inclusions)
