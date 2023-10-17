@@ -17,13 +17,26 @@ CXXFLAGS = -Wall -pedantic -std=c++17 -Os
 #with libboost (this specifically targets MacPorts inclusions)
 #CXXFLAGS += -I/opt/local/include
 
-ifeq ($(OS),Windows_NT)
-#Windows setting...
-	LDFLAGS = -static -static-libgcc -static-libstdc++ -s
-else
-#Mac/Linux setting...
-	LDFLAGS = -ldl -s TOTAL_MEMORY=268435456
-endif
+LDFLAGS = -ldl \
+	--pre-js ./_js_prefix.js \
+	--post-js ./_js_suffix.js \
+	--embed-file ./1DF9 \
+	--embed-file ./1DFC \
+	--embed-file ./asm \
+	--embed-file ./music \
+	--embed-file ./samples \
+	--embed-file ./SPCs \
+	--embed-file ./stats \
+	--embed-file ./Visualizations \
+	--embed-file "./Addmusic_list.txt" \
+	--embed-file "./Addmusic_sample groups.txt" \
+	--embed-file "./Addmusic_sound effects.txt" \
+	-s TOTAL_MEMORY=268435456 \
+	-s ENVIRONMENT=web \
+	-s INVOKE_RUN=0 \
+	-s EXIT_RUNTIME=0 \
+	-s EXPORTED_FUNCTIONS="[_main, _malloc]" \
+	-s EXPORTED_RUNTIME_METHODS="[FS, ccall, cwrap, setValue, writeAsciiToMemory]"
 
 #Commented out for now
 #with libboost (this specifically targets MacPorts inclusions)
@@ -37,16 +50,16 @@ AMMSRCS = src/AMMBatch/*.cpp
 
 all: addmusick
 
-addmusick: $(SRCS) src/AddmusicK/*.h; export 
+addmusick: $(SRCS) src/AddmusicK/*.h; \
 	cd src/AddmusicK; \
 	$(CXX) $(CXXFLAGS) -c $(patsubst %,../../%,$(SRCS))
 	$(CXX) -o AddmusicK.js src/AddmusicK/*.o $(LDFLAGS)
-	cd src/AM4Batch; \
-	$(CXX) $(CXXFLAGS) -c $(patsubst %,../../%,$(AM4SRCS))
-	$(CXX) -o AM4Batch.js src/AM4Batch/*.o $(LDFLAGS)
-	cd src/AMMBatch; \
-	$(CXX) $(CXXFLAGS) -c $(patsubst %,../../%,$(AMMSRCS))
-	$(CXX) -o AMMBatch.js src/AMMBatch/*.o $(LDFLAGS)
+#	cd src/AM4Batch; \
+#	$(CXX) $(CXXFLAGS) -c $(patsubst %,../../%,$(AM4SRCS))
+#	$(CXX) -o AM4Batch.js src/AM4Batch/*.o $(LDFLAGS)
+#	cd src/AMMBatch; \
+#	$(CXX) $(CXXFLAGS) -c $(patsubst %,../../%,$(AMMSRCS))
+#	$(CXX) -o AMMBatch.js src/AMMBatch/*.o $(LDFLAGS)
 
 clean:
 	rm -rf src/AddmusicK/*.o ./addmusick
