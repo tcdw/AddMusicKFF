@@ -19,39 +19,39 @@
         <button id="run_btn" disabled>Run!!</button>
     </form>
     <script type="module">
-        import { module, setLogger } from "./AddmusicK.js";
+        import Module from "./AddmusicK.js";
 
-        // logger
-        const logBank = document.getElementById("log_bank");
-        setLogger((info, type) => {
-            logBank.insertAdjacentHTML("beforeend", '<div style="color: ' + (type === "stdout" ? "blue" : "red") + '">' + info + '</div>')
-        })
+        Module().then(async (module) => {
+            // logger
+            const logBank = document.getElementById("log_bank");
+            module.setLogger((info, type) => {
+                logBank.insertAdjacentHTML("beforeend", '<div style="color: ' + (type === "stdout" ? "black" : "red") + '">' + info + '</div>')
+            })
 
-        // run button
-        const runBtn = document.getElementById("run_btn");
-        const addmusick = module.cwrap('main', 'number', ['number', 'number']);
+            // run button
+            const runBtn = document.getElementById("run_btn");
+            const addmusick = module.cwrap('main', 'number', ['number', 'number']);
 
-        runBtn.addEventListener("click", () => {
-            const args = ['addmusick', document.getElementById("arg_input").value];
-            const argsPtr = module._malloc(args.length * Uint32Array.BYTES_PER_ELEMENT);
-            args.forEach((s, idx) => {
-                const buf = module._malloc(s.length + 1);
-                module.writeAsciiToMemory(s, buf);
-                module.setValue(argsPtr + (Uint32Array.BYTES_PER_ELEMENT * idx), buf, 'i32');
-            });
-            addmusick(args.length, argsPtr);
+            runBtn.addEventListener("click", () => {
+                const args = ['addmusick', document.getElementById("arg_input").value];
+                const argsPtr = module._malloc(args.length * Uint32Array.BYTES_PER_ELEMENT);
+                args.forEach((s, idx) => {
+                    const buf = module._malloc(s.length + 1);
+                    module.writeAsciiToMemory(s, buf);
+                    module.setValue(argsPtr + (Uint32Array.BYTES_PER_ELEMENT * idx), buf, 'i32');
+                });
+                addmusick(args.length, argsPtr);
 
-            console.log(module);
-        })
+                console.log(module);
+            })
 
-        // allow to click when ready
-        module.onRuntimeInitialized = () => {
+            // hacking global
+            window.prompt = () => "some text here\n";
+            window.Module = module;
+
+            await module.ready;
             runBtn.disabled = "";
-        };
-
-        // hacking global
-        window.prompt = () => "some text here\n";
-        window.Module = module;
+        })
     </script>
 </body>
 

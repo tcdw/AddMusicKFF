@@ -1,13 +1,13 @@
 let logger = function() {}
 
-Module['print'] = function(message) { 
+Module['print'] = (message) => { 
     logger(message, 'stdout'); 
 };
 
-Module['printErr'] = function(message) { 
+Module['printErr'] = (message) => { 
     logger(message, 'stderr'); 
 };
 
-export function setLogger(func) {
+Module["setLogger"] = (func) => {
     logger = func;
 }

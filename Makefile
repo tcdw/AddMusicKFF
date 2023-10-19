@@ -35,6 +35,7 @@ LDFLAGS = -ldl \
 	-s ENVIRONMENT=web \
 	-s INVOKE_RUN=0 \
 	-s EXIT_RUNTIME=0 \
+	-s EXPORT_ES6 \
 	-s EXPORTED_FUNCTIONS="[_main, _malloc]" \
 	-s EXPORTED_RUNTIME_METHODS="[FS, ccall, cwrap, setValue, writeAsciiToMemory]"# \
 	# -L/Users/tcdw/Projects/asar/build/asar/lib
